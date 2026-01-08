@@ -1,6 +1,5 @@
-# simple_gbm_predictor_days.py
 """
-Simple stock price prediction using Geometric Brownian Motion (GBM)
+Stock price prediction using Geometric Brownian Motion (GBM)
 Forecasts median and 95% confidence interval for daily steps
 """
 import yfinance as yf
@@ -111,4 +110,5 @@ if __name__ == "__main__":
     n_days = int(n_days_input) if n_days_input.isdigit() else 126 # Default
     
     print(f"\n Fetching data and running simulation for {ticker}...")
+
     predict_stock_daily(ticker, n_days)
