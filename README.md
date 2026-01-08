@@ -8,7 +8,7 @@ This project implements a **Geometric Brownian Motion (GBM)** model to forecast 
 
 ## Files
 
-- `simple_gbm_predictor_days.py` — Main Python script
+- `stock_predictor.py` — Main Python script
 - `README.md` — Project documentation
 
 ---
@@ -190,4 +190,4 @@ The script produces:
 ## How to Run
 
 ```bash
-python simple_gbm_predictor_days.py
+python stock_predictor.py
