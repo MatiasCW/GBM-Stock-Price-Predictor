@@ -1,4 +1,4 @@
-# Simple GBM Stock Price Predictor (Daily)
+# GBM Stock Price Predictor 
 
 This project implements a **Geometric Brownian Motion (GBM)** model to forecast future stock prices using historical daily closing prices. The model estimates drift and volatility from data, simulates future price paths, and reports the **median forecast** along with a **95% confidence interval**.
 
