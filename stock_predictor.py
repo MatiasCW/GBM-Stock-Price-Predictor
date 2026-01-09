@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import sqlite3
 
 def estimate_gbm_parameters(prices):
     """Estimate drift (μ) and volatility (σ) from historical prices"""
@@ -97,7 +98,21 @@ def predict_stock_daily(ticker, n_days=126, n_sim=1000):  # ~6 months
     print(f"    Range:                   {((lower[-1]/S0)-1)*100:+.1f}% to {((upper[-1]/S0)-1)*100:+.1f}%")
     print(f"\nExpected annual return (μ - 0.5σ²): {(mu-0.5*sigma**2)*100:.2f}%")
     print(f"{'='*60}")
-
+    
+    # SQLite Save Function
+    def save_simple_forecast():
+        conn = sqlite3.connect('forecasts.db')
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS forecasts
+                     (ticker text, date text, median real, lower real, upper real)''')
+        c.execute("INSERT INTO forecasts VALUES (?, datetime('now'), ?, ?, ?)",
+                  (ticker, float(median[-1]), float(lower[-1]), float(upper[-1])))
+        conn.commit()
+        conn.close()
+        print(f"💾 Saved forecast for {ticker} to forecasts.db")
+    
+    # Call the save function
+    save_simple_forecast()
 if __name__ == "__main__":
     print("Stock Price Predictor")
     print("=" * 60)
