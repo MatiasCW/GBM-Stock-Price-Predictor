@@ -1,4 +1,4 @@
-# GBM Stock Price Predictor 
+# GBM Stock Price Predictor
 
 This project implements a **Geometric Brownian Motion (GBM)** model to forecast future stock prices using historical daily closing prices. The model estimates drift and volatility from data, simulates future price paths, and reports the **median forecast** along with a 95% confidence interval. Results are automatically saved to an SQLite database.
 
@@ -8,9 +8,9 @@ This project implements a **Geometric Brownian Motion (GBM)** model to forecast 
 
 ## Files
 
-- `simple_gbm_predictor_days.py` — Main Python script
-- `forecasts.db` — SQLite database (created automatically)
-- `README.md` — Project documentation
+- `stock_predictor.py` — Main Python script  
+- `forecasts.db` — SQLite database (created automatically)  
+- `README.md` — Project documentation  
 
 ---
 
@@ -21,14 +21,15 @@ Geometric Brownian Motion is a continuous-time stochastic process widely used to
 The GBM stochastic differential equation (SDE) is:
 
 $$
-\boxed{dS_t = \mu S_t \, dt + \sigma S_t \, dW_t}
+dS_t = \mu S_t \, dt + \sigma S_t \, dW_t
 $$
 
 where:
-- $$ S_t $$ = stock price at time $$ t $$
-- $$ \mu $$ = drift (expected return)
-- $$ \sigma $$ = volatility
-- $$ W_t $$ = standard Brownian motion
+
+- $S_t$ = stock price at time $t$  
+- $\mu$ = drift (expected return)  
+- $\sigma$ = volatility  
+- $W_t$ = standard Brownian motion  
 
 ---
 
@@ -37,7 +38,7 @@ where:
 Solving the SDE yields the analytical solution:
 
 $$
-\boxed{S_t = S_0 \exp\left((\mu - \tfrac{1}{2}\sigma^2)t + \sigma W_t\right)}
+S_t = S_0 \exp\Big((\mu - \frac{1}{2}\sigma^2)t + \sigma W_t\Big)
 $$
 
 This is the **core equation** used in the simulation.
@@ -46,39 +47,39 @@ This is the **core equation** used in the simulation.
 
 ## Parameter Estimation from Historical Data
 
-Let $$ P_0, P_1, \dots, P_n $$ be daily closing prices.
+Let $P_0, P_1, \dots, P_n$ be daily closing prices.
 
 ### 1️⃣ Log Returns
 
 Daily log returns are computed as:
 
 $$
-\boxed{r_i = \ln\left(\frac{P_i}{P_{i-1}}\right)}
+r_i = \ln\left(\frac{P_i}{P_{i-1}}\right)
 $$
 
 ---
 
-### 2️⃣ Volatility Estimation ($$ \sigma $$)
+### 2️⃣ Volatility Estimation ($\sigma$)
 
 Annualized volatility is estimated using the standard deviation of daily log returns:
 
 $$
-\boxed{\sigma = \sqrt{252} \cdot \mathrm{std}(r)}
+\sigma = \sqrt{252} \cdot \mathrm{std}(r)
 $$
 
 where 252 is the approximate number of trading days per year.
 
 ---
 
-### 3️⃣ Drift Estimation ($$ \mu $$)
+### 3️⃣ Drift Estimation ($\mu$)
 
 Annualized drift is estimated as:
 
 $$
-\boxed{\mu = 252 \cdot \mathrm{mean}(r) + \tfrac{1}{2}\sigma^2}
+\mu = 252 \cdot \mathrm{mean}(r) + \frac{1}{2}\sigma^2
 $$
 
-The $$ +\tfrac{1}{2}\sigma^2 $$ term converts the mean log return into arithmetic drift.
+The $\frac{1}{2}\sigma^2$ term converts the mean log return into arithmetic drift.
 
 ---
 
@@ -89,7 +90,7 @@ The $$ +\tfrac{1}{2}\sigma^2 $$ term converts the mean log return into arithmeti
 One trading day is modeled as:
 
 $$
-\boxed{\Delta t = \frac{1}{252}}
+\Delta t = \frac{1}{252}
 $$
 
 ---
@@ -99,27 +100,23 @@ $$
 For each simulation:
 
 $$
-\boxed{\Delta W_t \sim \mathcal{N}(0, \Delta t)}
+\Delta W_t \sim \mathcal{N}(0, \Delta t)
 $$
 
 Cumulative Brownian motion:
 
 $$
-\boxed{W_t = \sum_{i=1}^{t} \Delta W_i}
+W_t = \sum_{i=1}^{t} \Delta W_i
 $$
 
 ---
 
 ### Simulated Price Paths
 
-For $$ n $$ future trading days:
+For $n$ future trading days:
 
 $$
-\boxed{
-S_t = S_0 \exp\left(
-\frac{(\mu - \tfrac{1}{2}\sigma^2)t}{252} + \sigma W_t
-\right)
-}
+S_t = S_0 \exp\Bigg(\frac{(\mu - \frac{1}{2}\sigma^2)t}{252} + \sigma W_t\Bigg)
 $$
 
 This formula is implemented directly in the code.
@@ -133,19 +130,17 @@ After simulating many price paths:
 ### Median Forecast
 
 $$
-\boxed{\text{Median}_t = \mathrm{median}(S_t)}
+\text{Median}_t = \mathrm{median}(S_t)
 $$
-
----
 
 ### 95% Confidence Interval
 
 $$
-\boxed{\text{Lower}_t = \text{Percentile}_{2.5}(S_t)}
+\text{Lower}_t = \text{Percentile}_{2.5}(S_t)
 $$
 
 $$
-\boxed{\text{Upper}_t = \text{Percentile}_{97.5}(S_t)}
+\text{Upper}_t = \text{Percentile}_{97.5}(S_t)
 $$
 
 ---
@@ -155,6 +150,7 @@ $$
 All forecast results are automatically saved to an SQLite database (`forecasts.db`) with the following structure:
 
 ### Table Schema:
+
 ```sql
 CREATE TABLE forecasts (
     ticker TEXT,
@@ -162,4 +158,4 @@ CREATE TABLE forecasts (
     median REAL,
     lower REAL,
     upper REAL
-)
+);
