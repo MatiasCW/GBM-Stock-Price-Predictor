@@ -109,7 +109,7 @@ def predict_stock_daily(ticker, n_days=126, n_sim=1000):  # ~6 months
                   (ticker, float(median[-1]), float(lower[-1]), float(upper[-1])))
         conn.commit()
         conn.close()
-        print(f"💾 Saved forecast for {ticker} to forecasts.db")
+        print(f" Saved forecast for {ticker} to forecasts.db")
     
     # Call the save function
     save_simple_forecast()
