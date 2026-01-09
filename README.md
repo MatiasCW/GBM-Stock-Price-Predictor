@@ -1,14 +1,15 @@
 # GBM Stock Price Predictor 
 
-This project implements a **Geometric Brownian Motion (GBM)** model to forecast future stock prices using historical daily closing prices. The model estimates drift and volatility from data, simulates future price paths, and reports the **median forecast** along with a **95% confidence interval**.
+This project implements a **Geometric Brownian Motion (GBM)** model to forecast future stock prices using historical daily closing prices. The model estimates drift and volatility from data, simulates future price paths, and reports the **median forecast** along with a 95% confidence interval. Results are automatically saved to an SQLite database.
 
-> **Disclaimer**: This project is for educational purposes only and is **not financial advice**. GBM is a simplified model and does not capture dividends, jumps, regime changes, or macroeconomic effects.
+> **Disclaimer**: This project is for educational purposes only and is not financial advice. GBM is a simplified model and does not capture dividends, jumps, regime changes, or macroeconomic effects.
 
 ---
 
 ## Files
 
-- `stock_predictor.py` — Main Python script
+- `simple_gbm_predictor_days.py` — Main Python script
+- `forecasts.db` — SQLite database (created automatically)
 - `README.md` — Project documentation
 
 ---
@@ -24,10 +25,10 @@ $$
 $$
 
 where:
-- $S_t$ = stock price at time $t$
-- $\mu$ = drift (expected return)
-- $\sigma$ = volatility
-- $W_t$ = standard Brownian motion
+- \( S_t \) = stock price at time \( t \)
+- \( \mu \) = drift (expected return)
+- \( \sigma \) = volatility
+- \( W_t \) = standard Brownian motion
 
 ---
 
@@ -45,9 +46,9 @@ This is the **core equation** used in the simulation.
 
 ## Parameter Estimation from Historical Data
 
-Let $P_0, P_1, \dots, P_n$ be daily closing prices.
+Let \( P_0, P_1, \dots, P_n \) be daily closing prices.
 
-### Log Returns
+### 1️⃣ Log Returns
 
 Daily log returns are computed as:
 
@@ -57,7 +58,7 @@ $$
 
 ---
 
-### Volatility Estimation ($\sigma$)
+### 2️⃣ Volatility Estimation (\( \sigma \))
 
 Annualized volatility is estimated using the standard deviation of daily log returns:
 
@@ -69,7 +70,7 @@ where 252 is the approximate number of trading days per year.
 
 ---
 
-### Drift Estimation ($\mu$)
+### 3️⃣ Drift Estimation (\( \mu \))
 
 Annualized drift is estimated as:
 
@@ -77,7 +78,7 @@ $$
 \boxed{\mu = 252 \cdot \mathrm{mean}(r) + \tfrac{1}{2}\sigma^2}
 $$
 
-The $+\tfrac{1}{2}\sigma^2$ term converts the mean log return into arithmetic drift.
+The \( +\tfrac{1}{2}\sigma^2 \) term converts the mean log return into arithmetic drift.
 
 ---
 
@@ -111,7 +112,7 @@ $$
 
 ### Simulated Price Paths
 
-For $n$ future trading days:
+For \( n \) future trading days:
 
 $$
 \boxed{
@@ -149,45 +150,16 @@ $$
 
 ---
 
-## Expected Annual Return
+## SQLite Database Storage
 
-The expected continuously compounded annual growth rate is:
+All forecast results are automatically saved to an SQLite database (`forecasts.db`) with the following structure:
 
-$$
-\boxed{\mu - \tfrac{1}{2}\sigma^2}
-$$
-
-This value is printed in the program output.
-
----
-
-## Data & Forecast Horizon
-
-- Historical data used: **last 252 trading days (~1 year)**
-- Default forecast length: **126 trading days (~6 months)**
-- Forecast dates use **business days only**
-
----
-
-## Output
-
-The script produces:
-
-- A plot showing:
-  - Historical prices
-  - Median GBM forecast
-  - 95% confidence band
-
-- Console output including:
-  - Current price
-  - Estimated drift and volatility
-  - Median forecast price
-  - Expected percentage change
-  - Confidence interval
-
----
-
-## How to Run
-
-```bash
-python stock_predictor.py
+### Table Schema:
+```sql
+CREATE TABLE forecasts (
+    ticker TEXT,
+    date TEXT,
+    median REAL,
+    lower REAL,
+    upper REAL
+)
