@@ -25,10 +25,10 @@ $$
 $$
 
 where:
-- \( S_t \) = stock price at time \( t \)
-- \( \mu \) = drift (expected return)
-- \( \sigma \) = volatility
-- \( W_t \) = standard Brownian motion
+- $$ S_t $$ = stock price at time $$ t $$
+- $$ \mu $$ = drift (expected return)
+- $$ \sigma $$ = volatility
+- $$ W_t $$ = standard Brownian motion
 
 ---
 
@@ -46,7 +46,7 @@ This is the **core equation** used in the simulation.
 
 ## Parameter Estimation from Historical Data
 
-Let \( P_0, P_1, \dots, P_n \) be daily closing prices.
+Let $$ P_0, P_1, \dots, P_n $$ be daily closing prices.
 
 ### 1️⃣ Log Returns
 
@@ -58,7 +58,7 @@ $$
 
 ---
 
-### 2️⃣ Volatility Estimation (\( \sigma \))
+### 2️⃣ Volatility Estimation ($$ \sigma $$)
 
 Annualized volatility is estimated using the standard deviation of daily log returns:
 
@@ -70,7 +70,7 @@ where 252 is the approximate number of trading days per year.
 
 ---
 
-### 3️⃣ Drift Estimation (\( \mu \))
+### 3️⃣ Drift Estimation ($$ \mu $$)
 
 Annualized drift is estimated as:
 
@@ -78,7 +78,7 @@ $$
 \boxed{\mu = 252 \cdot \mathrm{mean}(r) + \tfrac{1}{2}\sigma^2}
 $$
 
-The \( +\tfrac{1}{2}\sigma^2 \) term converts the mean log return into arithmetic drift.
+The $$ +\tfrac{1}{2}\sigma^2 $$ term converts the mean log return into arithmetic drift.
 
 ---
 
@@ -112,7 +112,7 @@ $$
 
 ### Simulated Price Paths
 
-For \( n \) future trading days:
+For $$ n $$ future trading days:
 
 $$
 \boxed{
